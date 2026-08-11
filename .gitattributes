@@ -1,0 +1,13 @@
+# Normalise line endings in the repository regardless of who commits.
+#
+# Contributors arrive from Windows, macOS and Linux; without this, whichever
+# platform has `core.autocrlf` set differently turns whole files into diffs that
+# say nothing. Stored as LF, checked out however the platform prefers.
+* text=auto
+
+# Binary, so never touched.
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

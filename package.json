@@ -1,0 +1,40 @@
+{
+  "name": "headlesscanvas-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Monorepo for HeadlessCanvas — a canvas editor engine with DOM-based controls",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elephancube/headlesscanvas-js.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@11.20.0",
+  "scripts": {
+    "build": "pnpm -r --filter \"./packages/*\" build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit -p packages/core/tsconfig.json && tsc --noEmit -p packages/ui/tsconfig.json && tsc --noEmit -p packages/react/tsconfig.json && tsc --noEmit -p docs/tsconfig.json",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "size": "node ./scripts/check-size.mjs",
+    "changeset": "changeset",
+    "release": "pnpm build && changeset publish",
+    "dev:vanilla": "pnpm --filter example-vanilla dev",
+    "dev:react": "pnpm --filter example-react dev",
+    "docs:dev": "pnpm --filter headlesscanvas-docs dev",
+    "docs:build": "pnpm --filter headlesscanvas-docs build",
+    "docs:preview": "pnpm --filter headlesscanvas-docs preview"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.14",
+    "@changesets/cli": "^2.29.8",
+    "fast-check": "^4.5.0",
+    "jsdom": "^30.0.1",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

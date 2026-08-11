@@ -1,0 +1,9 @@
+packages:
+  - 'packages/*'
+  - 'examples/*'
+  - 'docs'
+
+# esbuild ships prebuilt binaries and needs its install script to run;
+# tsup (the build tool) depends on it.
+allowBuilds:
+  esbuild: true

@@ -1,0 +1,35 @@
+{
+  "name": "@headless-canvas/ui",
+  "version": "0.0.0",
+  "description": "Default control UI for HeadlessCanvas — imperative DOM, usable from any framework or none",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elephancube/headlesscanvas-js.git",
+    "directory": "packages/ui"
+  },
+  "keywords": ["canvas", "canvas-editor", "whiteboard", "headless", "ui"],
+  "type": "module",
+  "sideEffects": ["*.css"],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup && node ./scripts/copy-css.mjs"
+  },
+  "dependencies": {
+    "@headless-canvas/core": "workspace:*"
+  }
+}

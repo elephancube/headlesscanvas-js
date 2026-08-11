@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    // Resolved to source rather than dist so typechecking does not require the
+    // dependency to be built first. tsup produces the published artefacts.
+    "paths": {
+      "@headless-canvas/core": ["../core/src/index.ts"]
+    }
+  },
+  "include": ["src", "test"]
+}

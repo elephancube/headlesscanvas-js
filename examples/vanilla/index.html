@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HeadlessCanvas — vanilla example</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font: 14px/1.5 system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        color: #111827;
+      }
+      header {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 10px 14px;
+        border-bottom: 1px solid #e5e7eb;
+        background: #f9fafb;
+      }
+      button {
+        font: inherit;
+        padding: 5px 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        background: #fff;
+        cursor: pointer;
+      }
+      button:hover { background: #f3f4f6; }
+      #stage { flex: 1; background: #fff; }
+      .stat { margin-left: auto; font-variant-numeric: tabular-nums; color: #6b7280; }
+
+      /*
+       * Level 2 customisation: no JavaScript, just CSS against the documented
+       * class names and data attributes.
+       *
+       * The `themed` class exists only so the toolbar can take it away. Nothing
+       * below needs the library's cooperation — which is the point of showing it
+       * next to a button that turns it off.
+       */
+      #stage.themed { --hc-accent: #e11d48; --hc-handle-size: 11px; }
+      #stage.themed .hc-handle { border-radius: 50%; }
+      /*
+       * One handle singled out by its data attribute. Only its distance from
+       * the box is changed: a rotate handle filled with the accent colour reads
+       * as "active" next to the hollow resize handles, so it keeps the same
+       * white fill and border as the rest.
+       */
+      #stage.themed .hc-handle[data-hc-handle='rotate'] { --hc-rotate-distance: 32px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button id="add-rect">Rectangle</button>
+      <button id="add-ellipse">Ellipse</button>
+      <button id="add-text">Text</button>
+      <button id="add-path">Path</button>
+      <button id="add-star">Star (custom shape)</button>
+      <button id="group">Group / ungroup</button>
+      <button id="undo">Undo</button>
+      <button id="redo">Redo</button>
+      <button id="grid" aria-pressed="false">Grid: off</button>
+      <button id="level" aria-pressed="false">Level 1: default controls</button>
+      <button id="theme" aria-pressed="true">Level 2: CSS on</button>
+      <button id="tool">Tool: select</button>
+      <button id="stress">Add 5,000 shapes</button>
+      <button id="fit">Zoom to fit</button>
+      <button id="export">Export PNG @2x</button>
+      <button id="export-svg">Export SVG</button>
+      <button id="save-file">Save file</button>
+      <button id="open-file">Open file</button>
+      <input id="file" type="file" accept=".hcanvas,application/json" hidden />
+      <button id="save">Save (local)</button>
+      <button id="load">Load (local)</button>
+      <button id="clear">Clear</button>
+      <span class="stat" id="stat"></span>
+    </header>
+    <div id="stage" class="themed"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

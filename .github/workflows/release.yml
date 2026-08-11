@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+# Two runs publishing at once would race for the same version numbers, and a
+# half-finished release is worse than a late one — so a run in progress is
+# always allowed to finish.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  # The action pushes the version bump and its tags.
+  contents: write
+  # …and opens the pull request that carries them.
+  pull-requests: write
+  # Provenance. Without this npm publishes unsigned, silently.
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Changesets compares against the base branch to work out what
+          # changed, which a shallow clone cannot answer.
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          # Writes the .npmrc that NODE_AUTH_TOKEN below is read into.
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+
+      # CI already runs on this commit, but a release is the one moment where
+      # "probably green" is not good enough: a broken publish cannot be undone,
+      # because npm refuses to reuse a version number ever again.
+      - name: Verify
+        run: |
+          pnpm lint
+          pnpm typecheck
+          pnpm test
+          pnpm build
+
+      # With pending changesets, this opens a pull request that applies the
+      # version bumps and changelogs. With none, the versions have already been
+      # bumped by that pull request being merged, so it publishes instead.
+      - name: Version or publish
+        uses: changesets/action@v1
+        with:
+          version: pnpm changeset version
+          publish: pnpm release
+          title: 'Release: version packages'
+          commit: 'chore: version packages'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Remove once trusted publishing is configured on npm — the point of
+          # it is that no token lives in this repository at all. It cannot be
+          # set up before a package exists, so the first release needs this.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Attaches a signed statement of which commit and workflow built the
+          # tarball, verifiable from the npm page.
+          NPM_CONFIG_PROVENANCE: true

@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      # Advisory targets, hard ceilings. See scripts/check-size.mjs.
+      - name: Bundle size
+        run: pnpm size
+
+      # The examples double as the smoke test that the published entry points
+      # actually resolve.
+      - name: Build examples
+        run: |
+          pnpm --filter example-vanilla build
+          pnpm --filter example-react build
+
+      # Catches broken cross-references in the documentation, which VitePress
+      # treats as build failures.
+      - name: Build docs
+        run: pnpm docs:build

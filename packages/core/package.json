@@ -1,0 +1,41 @@
+{
+  "name": "@headless-canvas/core",
+  "version": "0.0.0",
+  "description": "Canvas editor engine with DOM-based controls — scene graph, state, transforms and headless control primitives",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elephancube/headlesscanvas-js.git",
+    "directory": "packages/core"
+  },
+  "keywords": [
+    "canvas",
+    "canvas-editor",
+    "whiteboard",
+    "diagram",
+    "design-tool",
+    "annotation",
+    "infinite-canvas",
+    "headless",
+    "scene-graph"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup"
+  }
+}

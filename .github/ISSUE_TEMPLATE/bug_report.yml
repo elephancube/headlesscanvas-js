@@ -1,0 +1,64 @@
+name: Bug report
+description: Something behaves differently from what the documentation says
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. A minimal reproduction —
+        even a few lines against one of the examples — is far more useful than
+        a detailed description, because rendering and pointer bugs are very
+        sensitive to context.
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: '@headless-canvas/core 0.1.0'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: packages
+    attributes:
+      label: Which packages are involved?
+      multiple: true
+      options:
+        - '@headless-canvas/core'
+        - '@headless-canvas/ui'
+        - '@headless-canvas/react'
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: A link to a fork of an example, or the shortest code that shows it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect, and what happened instead?
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and OS
+      placeholder: Firefox 130, Windows 11
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else
+      description: |
+        Worth mentioning if relevant: custom shapes or tools, a replaced control
+        UI (Level 3), a non-default zoom, or a document large enough for
+        culling to matter.

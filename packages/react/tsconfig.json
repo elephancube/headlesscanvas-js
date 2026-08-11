@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@headless-canvas/core": ["../core/src/index.ts"],
+      "@headless-canvas/ui": ["../ui/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}
