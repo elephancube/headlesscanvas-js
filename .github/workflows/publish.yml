@@ -49,23 +49,39 @@ jobs:
           pnpm test
           pnpm build
 
-      - uses: changesets/action@v1
-        with:
-          publish: pnpm release
+      # Published with pnpm rather than `changeset publish`, which reports a
+      # failed publish by crashing inside its own error classifier
+      # ("Cannot read properties of undefined (reading 'includes')" in
+      # isAlreadyPublishedError) and never printing what npm actually said.
+      # Versioning is release.yml's job, so nothing here needs changesets.
+      #
+      # pnpm replaces the `workspace:*` ranges with real versions and skips
+      # anything already on the registry, so re-running this is safe.
+      - name: Publish
+        run: pnpm -r --filter "./packages/*" publish --access public --no-git-checks
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Both names, deliberately. `NODE_AUTH_TOKEN` is what setup-node wires
-          # into .npmrc, but changesets/action decides between token auth and
-          # OIDC by looking for a variable called `NPM_TOKEN` specifically —
-          # given only the former it announces "No NPM_TOKEN found, but OIDC is
-          # available" and tries trusted publishing, which cannot be configured
-          # until a package exists.
-          #
-          # Delete both once trusted publishing is set up: the OIDC path is the
+          # Delete once trusted publishing is set up: the OIDC path is the
           # intended end state, and the point of it is that no token lives in
           # this repository at all.
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Attaches a signed statement of which commit and workflow built the
+          # tarball, verifiable from the npm page.
+          NPM_CONFIG_PROVENANCE: true
+
+      # changesets/action used to do this as part of publishing. One tag rather
+      # than one per package, because `fixed` in the changesets config keeps all
+      # three on the same version by construction.
+      - name: Tag the release
+        run: |
+          version=$(node -p "require('./packages/core/package.json').version")
+          if git rev-parse "v$version" >/dev/null 2>&1; then
+            echo "v$version is already tagged; nothing to do."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$version" -m "v$version"
+          git push origin "v$version"
           # Attaches a signed statement of which commit and workflow built the
           # tarball, verifiable from the npm page.
           NPM_CONFIG_PROVENANCE: true
