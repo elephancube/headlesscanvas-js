@@ -1,6 +1,6 @@
 {
   "name": "@headless-canvas/react",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "React bindings for HeadlessCanvas",
   "license": "MIT",
   "repository": {
@@ -8,7 +8,13 @@
     "url": "git+https://github.com/elephancube/headlesscanvas-js.git",
     "directory": "packages/react"
   },
-  "keywords": ["canvas", "canvas-editor", "react", "whiteboard", "headless"],
+  "keywords": [
+    "canvas",
+    "canvas-editor",
+    "react",
+    "whiteboard",
+    "headless"
+  ],
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",
@@ -21,7 +27,9 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
