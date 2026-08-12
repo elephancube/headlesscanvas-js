@@ -1,6 +1,6 @@
 {
   "name": "@headless-canvas/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Canvas editor engine with DOM-based controls — scene graph, state, transforms and headless control primitives",
   "license": "MIT",
   "repository": {
@@ -31,7 +31,9 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
