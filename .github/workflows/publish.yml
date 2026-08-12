@@ -57,16 +57,20 @@ jobs:
       #
       # pnpm replaces the `workspace:*` ranges with real versions and skips
       # anything already on the registry, so re-running this is safe.
+      #
+      # `--provenance` attaches a signed statement of which commit and workflow
+      # built the tarball, verifiable from the npm page. It has to be the flag:
+      # pnpm does not read npm's `NPM_CONFIG_PROVENANCE` environment variable,
+      # which is how 0.1.0 went out without one.
       - name: Publish
-        run: pnpm -r --filter "./packages/*" publish --access public --no-git-checks
+        run: |
+          pnpm -r --filter "./packages/*" publish \
+            --access public --no-git-checks --provenance
         env:
           # Delete once trusted publishing is set up: the OIDC path is the
           # intended end state, and the point of it is that no token lives in
           # this repository at all.
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # Attaches a signed statement of which commit and workflow built the
-          # tarball, verifiable from the npm page.
-          NPM_CONFIG_PROVENANCE: true
 
       # changesets/action used to do this as part of publishing. One tag rather
       # than one per package, because `fixed` in the changesets config keeps all
@@ -82,6 +86,3 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag -a "v$version" -m "v$version"
           git push origin "v$version"
-          # Attaches a signed statement of which commit and workflow built the
-          # tarball, verifiable from the npm page.
-          NPM_CONFIG_PROVENANCE: true
