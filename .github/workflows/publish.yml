@@ -1,0 +1,63 @@
+name: Publish
+
+# Started by hand, after the version pull request from release.yml is merged.
+#
+# Deliberately not automatic. npm never allows a version number to be reused, so
+# a mistaken publish cannot be undone — only followed by another version. A
+# human decides when that happens, and the npm-publish environment can require a
+# second one to approve it.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+permissions:
+  # changesets pushes the release tags it creates.
+  contents: write
+  # Provenance. Without this npm publishes unsigned, silently.
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # Holds the npm token, and can require an approval before the job starts.
+    environment: npm-publish
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          # Writes the .npmrc that NODE_AUTH_TOKEN below is read into.
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+
+      # CI has already run on this commit, but "probably green" is not good
+      # enough for the one step that cannot be taken back.
+      - name: Verify
+        run: |
+          pnpm lint
+          pnpm typecheck
+          pnpm test
+          pnpm build
+
+      - uses: changesets/action@v1
+        with:
+          publish: pnpm release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Remove once trusted publishing is configured on npm — the point of
+          # it is that no token lives in this repository at all. It cannot be
+          # set up before a package exists, so the first release needs this.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Attaches a signed statement of which commit and workflow built the
+          # tarball, verifiable from the npm page.
+          NPM_CONFIG_PROVENANCE: true
