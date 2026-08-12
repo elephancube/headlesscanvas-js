@@ -37,12 +37,12 @@ Class names, `data-hc-*` attributes and CSS variables are **public API** under s
 .hc-container[data-hc-tool='hand'] { cursor: grab; }
 ```
 
-See the [CSS contract](https://elephancube.github.io/headlesscanvas-js/api/css).
+See the [CSS contract](https://headlesscanvas.com/api/css).
 
 ## Documentation
 
-- [Guide and live demos](https://elephancube.github.io/headlesscanvas-js/)
-- [日本語のドキュメント](https://elephancube.github.io/headlesscanvas-js/ja/)
+- [Guide and live demos](https://headlesscanvas.com/)
+- [日本語のドキュメント](https://headlesscanvas.com/ja/)
 
 ## License
 

@@ -40,9 +40,9 @@ To build the controls yourself, `useSelectionBox()` returns the box and a prop-g
 
 ## Documentation
 
-- [React guide](https://elephancube.github.io/headlesscanvas-js/guide/react)
-- [API reference](https://elephancube.github.io/headlesscanvas-js/api/react)
-- [日本語のドキュメント](https://elephancube.github.io/headlesscanvas-js/ja/guide/react)
+- [React guide](https://headlesscanvas.com/guide/react)
+- [API reference](https://headlesscanvas.com/api/react)
+- [日本語のドキュメント](https://headlesscanvas.com/ja/guide/react)
 
 ## License
 

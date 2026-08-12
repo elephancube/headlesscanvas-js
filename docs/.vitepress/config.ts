@@ -7,8 +7,13 @@ const REPO = 'https://github.com/elephancube/headlesscanvas-js'
  * Deployed to GitHub Pages at /headlesscanvas-js/ by default. A custom domain
  * serves from the root instead, so the prefix is overridable rather than
  * baked in.
+ *
+ * Normalised rather than used as given: the workflow passes
+ * `configure-pages`'s `base_path`, which is empty for a custom domain, and
+ * `${empty}/` would produce `//assets/…` on every page.
  */
-const base = process.env.DOCS_BASE ?? '/headlesscanvas-js/'
+const configured = (process.env.DOCS_BASE ?? '/headlesscanvas-js/').replace(/^\/+|\/+$/g, '')
+const base = configured === '' ? '/' : `/${configured}/`
 
 const guide = (prefix: string) => [
   { text: 'Introduction', link: `${prefix}/guide/` },

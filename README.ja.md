@@ -2,9 +2,13 @@
 
 **デザインツール・ホワイトボード・作図エディタ・フロアプラン・画像アノテーション UI を作るための Canvas エディタエンジン。操作ハンドルは実際の DOM 要素なので、CSS でそのままスタイリングできます。**
 
-[ドキュメントとデモ](https://elephancube.github.io/headlesscanvas-js/ja/) · [English README](./README.md)
+[ドキュメントとデモ](https://headlesscanvas.com/ja/) · [English README](./README.md)
 
-> **状態: pre-alpha。** v1.0 に向けて開発中です（[ロードマップ](#ロードマップ)）。API は固まっていますが、npm へは未公開です。
+> **状態: プレビュー。** [ロードマップ](#ロードマップ)の残りが片付くまで 0.1.x として公開しています。API は固まっており、1.0 前に破壊的変更を入れる場合は CHANGELOG に記載します。
+
+```sh
+npm install @headless-canvas/core @headless-canvas/ui
+```
 
 図形は速度のために `<canvas>` に描画します。選択枠・リサイズハンドル・回転 UI は**その上に重ねた DOM 要素**として描画するため、素の CSS で外観を変更でき、独自のマークアップに丸ごと差し替えることもできます。
 

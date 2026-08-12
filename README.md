@@ -2,9 +2,13 @@
 
 **A canvas editor engine for building design tools, whiteboards, diagram editors, floor planners and image annotation UIs — where the selection handles are real DOM elements you style with CSS.**
 
-[Documentation and live demos](https://elephancube.github.io/headlesscanvas-js/) · [日本語版 README](./README.ja.md)
+[Documentation and live demos](https://headlesscanvas.com/) · [日本語版 README](./README.ja.md)
 
-> **Status: pre-alpha.** Working towards v1.0; see [Roadmap](#roadmap). The API is settled but not yet published to npm.
+> **Status: preview.** Published as 0.1.x while the last of [the roadmap](#roadmap) lands. The API is settled; breaking changes before 1.0 would be listed in the changelog.
+
+```sh
+npm install @headless-canvas/core @headless-canvas/ui
+```
 
 Shapes are rendered to `<canvas>` for speed. Selection boxes, resize handles and rotation UI are rendered as **DOM elements overlaid on top**, so you restyle them with plain CSS — or replace them entirely with your own markup.
 

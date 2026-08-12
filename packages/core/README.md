@@ -27,9 +27,9 @@ Shape types are registered rather than hard-coded, so your own go through exactl
 
 ## Documentation
 
-- [Guide and live demos](https://elephancube.github.io/headlesscanvas-js/)
-- [日本語のドキュメント](https://elephancube.github.io/headlesscanvas-js/ja/)
-- [API reference](https://elephancube.github.io/headlesscanvas-js/api/)
+- [Guide and live demos](https://headlesscanvas.com/)
+- [日本語のドキュメント](https://headlesscanvas.com/ja/)
+- [API reference](https://headlesscanvas.com/api/)
 
 ## License
 
