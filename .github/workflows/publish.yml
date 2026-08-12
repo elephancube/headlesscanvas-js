@@ -54,9 +54,17 @@ jobs:
           publish: pnpm release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Remove once trusted publishing is configured on npm — the point of
-          # it is that no token lives in this repository at all. It cannot be
-          # set up before a package exists, so the first release needs this.
+          # Both names, deliberately. `NODE_AUTH_TOKEN` is what setup-node wires
+          # into .npmrc, but changesets/action decides between token auth and
+          # OIDC by looking for a variable called `NPM_TOKEN` specifically —
+          # given only the former it announces "No NPM_TOKEN found, but OIDC is
+          # available" and tries trusted publishing, which cannot be configured
+          # until a package exists.
+          #
+          # Delete both once trusted publishing is set up: the OIDC path is the
+          # intended end state, and the point of it is that no token lives in
+          # this repository at all.
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           # Attaches a signed statement of which commit and workflow built the
           # tarball, verifiable from the npm page.
