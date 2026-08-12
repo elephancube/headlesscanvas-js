@@ -62,15 +62,14 @@ jobs:
       # built the tarball, verifiable from the npm page. It has to be the flag:
       # pnpm does not read npm's `NPM_CONFIG_PROVENANCE` environment variable,
       # which is how 0.1.0 went out without one.
+      #
+      # No token: npm is configured to trust this workflow, in this repository,
+      # running in this environment, and pnpm exchanges the job's OIDC identity
+      # for a short-lived credential. Nothing long-lived exists to be stolen.
       - name: Publish
         run: |
           pnpm -r --filter "./packages/*" publish \
             --access public --no-git-checks --provenance
-        env:
-          # Delete once trusted publishing is set up: the OIDC path is the
-          # intended end state, and the point of it is that no token lives in
-          # this repository at all.
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # changesets/action used to do this as part of publishing. One tag rather
       # than one per package, because `fixed` in the changesets config keeps all
