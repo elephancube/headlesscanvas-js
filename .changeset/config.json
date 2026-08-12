@@ -7,5 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["example-vanilla", "example-react"]
+  "ignore": ["headlesscanvas-docs", "example-vanilla", "example-react"]
 }
