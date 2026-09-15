@@ -3,6 +3,9 @@ import { defineConfig } from 'vitepress'
 
 const REPO = 'https://github.com/elephancube/headlesscanvas-js'
 
+/** Absolute, because a link preview is fetched by someone else's server. */
+const SITE = 'https://headlesscanvas.com'
+
 /**
  * Deployed to GitHub Pages at /headlesscanvas-js/ by default. A custom domain
  * serves from the root instead, so the prefix is overridable rather than
@@ -32,6 +35,19 @@ const guide = (prefix: string) => [
   { text: 'Performance', link: `${prefix}/guide/performance` },
 ]
 
+const examples = (
+  prefix: string,
+  labels: readonly [string, string, string, string, string, string, string],
+) => [
+  { text: labels[0], link: `${prefix}/examples/` },
+  { text: labels[1], link: `${prefix}/examples/sketchpad` },
+  { text: labels[2], link: `${prefix}/examples/graph-paper` },
+  { text: labels[3], link: `${prefix}/examples/pixel-art` },
+  { text: labels[4], link: `${prefix}/examples/tangram` },
+  { text: labels[5], link: `${prefix}/examples/amidakuji` },
+  { text: labels[6], link: `${prefix}/examples/polaroid` },
+]
+
 const api = (prefix: string) => [
   { text: 'Overview', link: `${prefix}/api/` },
   { text: 'Editor', link: `${prefix}/api/editor` },
@@ -43,14 +59,32 @@ const api = (prefix: string) => [
 
 export default defineConfig({
   base,
+  /*
+   * The seating chart is held back rather than deleted.
+   *
+   * Its source stays in `.vitepress/apps/`, stays typechecked, and stays in the
+   * smoke test, so it cannot rot while it waits — but excluding the pages keeps
+   * it out of the navigation *and* out of the search index, which an unlinked
+   * page would not be.
+   */
+  srcExclude: ['examples/seating.md', 'ja/examples/seating.md'],
   title: 'HeadlessCanvas',
   description:
     'A canvas editor engine whose selection handles are DOM elements — styleable with CSS, reachable by assistive technology, MIT licensed.',
   lastUpdated: true,
   cleanUrls: true,
+  /*
+   * `base` has to be written in by hand here: VitePress resolves it for links
+   * in the theme, but not for raw tags in `head`.
+   */
   head: [
-    ['meta', { name: 'theme-color', content: '#3b82f6' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}favicon.svg` }],
+    // For the browsers that still want a bitmap. 16/32/48 in one file.
+    ['link', { rel: 'alternate icon', type: 'image/x-icon', href: `${base}favicon.ico` }],
+    ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: `${base}apple-touch-icon.png` }],
+    ['meta', { name: 'theme-color', content: '#144ffe' }],
     ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'HeadlessCanvas' }],
     ['meta', { property: 'og:title', content: 'HeadlessCanvas' }],
     [
       'meta',
@@ -59,6 +93,25 @@ export default defineConfig({
         content: 'A canvas editor engine whose selection handles are DOM elements.',
       },
     ],
+    ['meta', { property: 'og:url', content: `${SITE}/` }],
+    ['meta', { property: 'og:image', content: `${SITE}/og-image.png` }],
+    ['meta', { property: 'og:image:width', content: '1200' }],
+    ['meta', { property: 'og:image:height', content: '630' }],
+    [
+      'meta',
+      { property: 'og:image:alt', content: 'HeadlessCanvas — the handles are DOM elements.' },
+    ],
+    // Without this the card is a small square thumbnail rather than the banner.
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'HeadlessCanvas' }],
+    [
+      'meta',
+      {
+        name: 'twitter:description',
+        content: 'A canvas editor engine whose selection handles are DOM elements.',
+      },
+    ],
+    ['meta', { name: 'twitter:image', content: `${SITE}/og-image.png` }],
   ],
 
   locales: {
@@ -70,10 +123,25 @@ export default defineConfig({
           { text: 'Guide', link: '/guide/', activeMatch: '^/guide/' },
           { text: 'API', link: '/api/', activeMatch: '^/api/' },
           { text: 'Demos', link: '/demos' },
+          { text: 'Examples', link: '/examples/', activeMatch: '^/examples/' },
         ],
         sidebar: {
           '/guide/': [{ text: 'Guide', items: guide('') }],
           '/api/': [{ text: 'API reference', items: api('') }],
+          '/examples/': [
+            {
+              text: 'Sample applications',
+              items: examples('', [
+                'All applications',
+                'Sketchpad',
+                'Graph paper',
+                'Pixel editor',
+                'Tangram',
+                'Amidakuji',
+                'Photo collage',
+              ]),
+            },
+          ],
         },
         editLink: {
           pattern: `${REPO}/edit/main/docs/:path`,
@@ -96,10 +164,25 @@ export default defineConfig({
           { text: 'ガイド', link: '/ja/guide/', activeMatch: '^/ja/guide/' },
           { text: 'API', link: '/ja/api/', activeMatch: '^/ja/api/' },
           { text: 'デモ', link: '/ja/demos' },
+          { text: 'サンプルアプリ', link: '/ja/examples/', activeMatch: '^/ja/examples/' },
         ],
         sidebar: {
           '/ja/guide/': [{ text: 'ガイド', items: guide('/ja') }],
           '/ja/api/': [{ text: 'API リファレンス', items: api('/ja') }],
+          '/ja/examples/': [
+            {
+              text: 'サンプルアプリ',
+              items: examples('/ja', [
+                'アプリ一覧',
+                'お絵描き',
+                '方眼紙作図',
+                'ドット絵',
+                'タングラム',
+                'あみだくじ',
+                '写真コラージュ',
+              ]),
+            },
+          ],
         },
         editLink: {
           pattern: `${REPO}/edit/main/docs/:path`,
@@ -121,7 +204,9 @@ export default defineConfig({
   },
 
   themeConfig: {
-    logo: undefined,
+    // Two files rather than one: the H is navy, which disappears on a dark
+    // header. VitePress swaps them with the theme.
+    logo: { light: '/logo.svg', dark: '/logo-dark.svg', alt: 'HeadlessCanvas' },
     socialLinks: [{ icon: 'github', link: REPO }],
     search: {
       provider: 'local',

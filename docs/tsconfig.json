@@ -10,9 +10,9 @@
       "@headless-canvas/ui": ["../packages/ui/src/index.ts"]
     }
   },
-  // The demos and their smoke test. These are the part written against the
-  // public API, so typechecking them is what keeps the documentation honest
-  // when the API moves. The VitePress config and theme are checked by the
-  // build itself.
-  "include": [".vitepress/demos", ".vitepress/css.d.ts", "test"]
+  // The demos, the sample applications and their smoke test. These are the
+  // part written against the public API, so typechecking them is what keeps the
+  // documentation honest when the API moves. The VitePress config and theme are
+  // checked by the build itself.
+  "include": [".vitepress/demos", ".vitepress/apps", ".vitepress/css.d.ts", "test"]
 }

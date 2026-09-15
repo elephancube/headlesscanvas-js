@@ -13,6 +13,9 @@ hero:
       text: Try the demos
       link: /demos
     - theme: alt
+      text: Sample apps
+      link: /examples/
+    - theme: alt
       text: GitHub
       link: https://github.com/elephancube/headlesscanvas-js
 

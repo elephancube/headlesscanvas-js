@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 170" role="img" aria-label="HeadlessCanvas">
+  <!--
+    The HC monogram: a navy H whose right stem is the blue C's spine, so the two
+    letters share an edge rather than sitting side by side. Every segment is
+    axis-aligned and 30 units wide.
+  -->
+  <path fill="#0A1937" d="M0,0H30V70H92V100H30V170H0Z"/>
+  <path fill="#144FFE" d="M92,0H200V30H122V140H200V170H92Z"/>
+</svg>

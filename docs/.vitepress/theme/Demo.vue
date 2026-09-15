@@ -1,10 +1,19 @@
 <script setup lang="ts">
 import { useData } from 'vitepress'
 import { onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { apps } from '../apps'
 import { demos } from '../demos'
 import type { DemoInstance } from '../demos/types'
 
-const props = defineProps<{ id: string; title?: string }>()
+// Feature demos and sample applications mount identically; only the page they
+// appear on differs.
+const runnable = { ...demos, ...apps }
+
+/**
+ * `bare` drops the framing. The hero mounts the same way as every other demo
+ * and only wants the editor itself, not a captioned figure.
+ */
+const props = defineProps<{ id: string; title?: string; bare?: boolean }>()
 
 const { lang } = useData()
 const host = ref<HTMLElement | null>(null)
@@ -15,7 +24,7 @@ let observer: IntersectionObserver | null = null
 
 async function mount(): Promise<void> {
   const element = host.value
-  const load = demos[props.id]
+  const load = runnable[props.id]
   if (!element || !load || instance.value) return
   try {
     const demo = await load()
@@ -54,7 +63,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <figure class="hc-demo">
+  <div v-if="bare" class="hc-demo-bare">
+    <div ref="host" class="hc-demo-host"></div>
+    <p v-if="failed" class="hc-demo-error">{{ failed }}</p>
+  </div>
+  <figure v-else class="hc-demo">
     <figcaption v-if="title" class="hc-demo-title">{{ title }}</figcaption>
     <div ref="host" class="hc-demo-host"></div>
     <p v-if="failed" class="hc-demo-error">{{ failed }}</p>

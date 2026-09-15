@@ -2,6 +2,8 @@
 
 Every demo on this page runs the library from source. They start as they scroll into view, so several live editors can share a page without competing for frames.
 
+Each one isolates a single feature. For whole applications built out of them, see the [sample applications](/examples/).
+
 ## The stock controls
 
 Level 1: construct an editor, mount the default UI, and nothing else. The readout counts the DOM nodes inside the overlay — it stays in the low tens whatever the shape count, because control UI only ever exists for the selection.

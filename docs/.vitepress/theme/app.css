@@ -1,0 +1,311 @@
+/*
+ * Styling for the sample applications.
+ *
+ * As with demo.css, none of this belongs to HeadlessCanvas: the library ships
+ * no toolbars, panels or palettes (spec §3, non-goals). The one thing here that
+ * touches the library's own contract is `--hc-zoom`, which it writes to the
+ * overlay so that elements placed in world space can hold a constant size on
+ * screen — the same mechanism the stock handles use (invariant 4).
+ */
+
+/* A drawing surface rather than a grid: these applications draw their own. */
+.hc-app-plain {
+  background-image: none;
+}
+
+.hc-app-group {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.hc-app-swatch {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.hc-app-swatch:hover {
+  border-color: var(--vp-c-text-1);
+}
+
+.hc-app-note:empty {
+  display: none;
+}
+
+.hc-app-note {
+  border-top: 1px solid var(--vp-c-divider);
+  padding: 8px 12px;
+  background: var(--vp-c-bg-alt);
+}
+
+/* --- the hero ------------------------------------------------------------- */
+/*
+ * A live editor where VitePress expects a picture.
+ *
+ * It is hidden below the width at which the hero stacks, and that is not a
+ * layout preference: on a touch screen a drag on the canvas is a drag on the
+ * canvas, so an editor sitting above the fold would eat the gesture someone
+ * used to scroll past it. The claim is worth making; it is not worth trapping
+ * the reader to make it.
+ */
+
+.hc-demo-bare {
+  width: 100%;
+}
+
+.hc-hero-frame {
+  overflow: hidden;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 14px;
+  background: #fff;
+  background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+  background-size: 24px 24px;
+  box-shadow: 0 18px 40px -24px rgb(10 25 55 / 45%);
+}
+
+.hc-hero-stage {
+  height: 320px;
+}
+
+.hc-hero-caption {
+  margin: 12px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--vp-c-text-3);
+}
+
+@media (max-width: 959px) {
+  .VPHero .hc-demo-bare {
+    display: none;
+  }
+}
+
+/* --- the gallery ---------------------------------------------------------- */
+
+.hc-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.hc-gallery-card {
+  display: block;
+  padding: 16px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+  background: var(--vp-c-bg-soft);
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+
+.hc-gallery-card:hover {
+  border-color: var(--vp-c-brand-1);
+}
+
+.hc-gallery-card svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.hc-gallery-card strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--vp-c-text-1);
+}
+
+.hc-gallery-card span {
+  display: block;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--vp-c-text-2);
+}
+
+/* --- pixel editor --------------------------------------------------------- */
+/*
+ * The board's grid, like the graph paper's, is one element inside the overlay:
+ * it inherits the viewport transform, so it is written once at mount and never
+ * touched again. Only `background-size` comes from JavaScript.
+ */
+
+.hc-app-pixel-grid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  outline: calc(1px / var(--hc-zoom)) solid var(--hc-app-board-edge);
+  background-image:
+    linear-gradient(to right, var(--hc-app-grid-ink) calc(1px / var(--hc-zoom)), transparent 0),
+    linear-gradient(to bottom, var(--hc-app-grid-ink) calc(1px / var(--hc-zoom)), transparent 0);
+}
+
+.hc-app-palette {
+  flex-wrap: wrap;
+  max-width: 210px;
+}
+
+.hc-app-palette .hc-app-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+}
+
+.hc-app-palette .hc-app-swatch[aria-pressed='true'] {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 1px;
+}
+
+/* --- graph paper ---------------------------------------------------------- */
+/*
+ * The lattice is one element inside the overlay, so it inherits the viewport
+ * transform and pans and zooms for free. Its dot radius divides by --hc-zoom
+ * for the same reason a handle's size does: the drawing scales, the marks on
+ * the paper do not.
+ */
+
+.hc-app-grid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle,
+    var(--hc-app-grid-ink) calc(1px / var(--hc-zoom)),
+    transparent 0
+  );
+}
+
+.hc-app-vertex {
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  width: calc(9px / var(--hc-zoom));
+  height: calc(9px / var(--hc-zoom));
+  margin-left: calc(-4.5px / var(--hc-zoom));
+  margin-top: calc(-4.5px / var(--hc-zoom));
+  border: calc(1.5px / var(--hc-zoom)) solid var(--hc-app-vertex-ink);
+  border-radius: 50%;
+  background: #fff;
+  pointer-events: none;
+}
+
+/*
+ * Set on :root rather than inside the stage so both values have a definition
+ * outside any media query; the stage itself is white in both themes, so these
+ * do not vary with the site's appearance.
+ */
+:root {
+  --hc-app-grid-ink: #cbd5e1;
+  --hc-app-vertex-ink: #2563eb;
+  --hc-app-board-edge: #94a3b8;
+}
+
+/* --- amidakuji ------------------------------------------------------------ */
+/*
+ * The ball and the covers are the application talking, not the drawing: they
+ * are not in the document and would not appear in an exported PNG. Both sit in
+ * the overlay in world coordinates, so they travel with the ladder when it is
+ * panned or zoomed.
+ */
+
+.hc-app-ball {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  margin-top: -9px;
+  border-radius: 50%;
+  background: #e11d48;
+  box-shadow: 0 0 0 3px #fff;
+  pointer-events: none;
+}
+
+.hc-app-cover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 30px;
+  font: 600 18px/1 system-ui, sans-serif;
+  color: #94a3b8;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+/*
+ * `hidden` has to be honoured explicitly here.
+ *
+ * The user agent hides it with `[hidden] { display: none }`, which is the same
+ * specificity as the rule above and comes from a weaker origin — so an author's
+ * `display` silently wins and the attribute does nothing at all. Any rule that
+ * sets `display` on an element the code toggles needs this alongside it.
+ */
+.hc-app-cover[hidden] {
+  display: none;
+}
+
+/* --- collage -------------------------------------------------------------- */
+
+.hc-demo-stage[data-dropping] {
+  outline: 2px dashed var(--vp-c-brand-1);
+  outline-offset: -6px;
+  background-color: #f8fbff;
+}
+
+/* --- selection without transformation ------------------------------------- */
+
+/*
+ * Used by the tangram and the seating chart: applications where a shape can be
+ * picked but must not be resized or freely rotated. The handles are elements,
+ * so removing the ones that have no meaning is one rule — and `display: none`
+ * takes them out of the tab order too, which is right when there is nothing
+ * left for them to do.
+ */
+.hc-app-pick .hc-handle {
+  display: none;
+}
+
+/* --- seating -------------------------------------------------------------- */
+
+.hc-app-legend {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  color: var(--vp-c-text-2);
+}
+
+.hc-app-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.hc-app-legend strong {
+  margin-left: auto;
+  color: var(--vp-c-text-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.hc-app-chip {
+  width: 14px;
+  height: 12px;
+  border: 1px solid;
+  border-radius: 3px;
+}

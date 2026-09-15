@@ -13,6 +13,9 @@ hero:
       text: デモを触る
       link: /ja/demos
     - theme: alt
+      text: サンプルアプリ
+      link: /ja/examples/
+    - theme: alt
       text: GitHub
       link: https://github.com/elephancube/headlesscanvas-js
 

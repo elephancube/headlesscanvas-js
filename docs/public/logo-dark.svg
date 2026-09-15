@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 170" role="img" aria-label="HeadlessCanvas">
+  <!-- As logo.svg, with the H lifted off a dark header. -->
+  <path fill="#F1F5F9" d="M0,0H30V70H92V100H30V170H0Z"/>
+  <path fill="#3B6DFF" d="M92,0H200V30H122V140H200V170H92Z"/>
+</svg>

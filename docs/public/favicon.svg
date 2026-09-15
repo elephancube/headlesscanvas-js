@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="HeadlessCanvas">
+  <!--
+    The monogram alone, on the brand's rounded square. The selection handles
+    that surround the full mark are dropped here on purpose: at 16 pixels they
+    are noise, and what has to survive is the H and the C.
+  -->
+  <rect width="256" height="256" rx="56" fill="#FFFFFF"/>
+  <g transform="translate(32 46.4) scale(0.96)">
+    <path fill="#0A1937" d="M0,0H30V70H92V100H30V170H0Z"/>
+    <path fill="#144FFE" d="M92,0H200V30H122V140H200V170H92Z"/>
+  </g>
+</svg>
