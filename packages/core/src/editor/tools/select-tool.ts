@@ -267,9 +267,17 @@ export class SelectTool implements Tool {
       editor.updateShape(id, { rotation: shape.rotation + delta.x * 0.05 })
       return
     }
-    editor.transact(() => editor.updateShape(id, resizeRect(shape, handle, delta)), {
-      mergeKey: `resize:${handle}`,
-    })
+    const next = resizeRect(shape, handle, delta)
+    editor.transact(
+      () => {
+        editor.updateShape(id, next)
+        if (shape.type !== 'group' || shape.width <= 0 || shape.height <= 0) return
+        const contents = new Map<ShapeId, Partial<AnyShape>>()
+        scaleContents(editor, id, next.width / shape.width, next.height / shape.height, contents)
+        for (const [child, changes] of contents) editor.updateShape(child, changes)
+      },
+      { mergeKey: `resize:${handle}` },
+    )
   }
 
   // --- internals -----------------------------------------------------------
@@ -379,6 +387,9 @@ export class SelectTool implements Tool {
         width,
         height,
       })
+      if (this.editor.getShape(start.id)?.type === 'group') {
+        scaleContents(this.editor, start.id, sx, sy, changes)
+      }
     }
     this.editor.setEphemeral(changes)
   }
@@ -433,7 +444,11 @@ export class SelectTool implements Tool {
       }
     }
 
-    this.editor.setEphemeral(new Map([[start.id, changes]]))
+    const all = new Map<ShapeId, Partial<AnyShape>>([[start.id, changes]])
+    if (shape?.type === 'group' && start.width > 0 && start.height > 0) {
+      scaleContents(this.editor, start.id, width / start.width, height / start.height, all)
+    }
+    this.editor.setEphemeral(all)
   }
 
   private updateRotate(world: Vec, snap: boolean): void {
@@ -477,6 +492,53 @@ function arrowDelta(key: string): Vec | null {
       return { x: 0, y: 1 }
     default:
       return null
+  }
+}
+
+/**
+ * Changes that carry a group's contents along with its box.
+ *
+ * The model holds no scale factor — a shape's transform is a translation and a
+ * rotation, and nothing else (spec §5.3.3), which is what makes grouping and
+ * ungrouping exact. The same choice means a group cannot resize its children by
+ * growing its own box: there is nowhere for the factor to live. So it is written
+ * into each descendant instead.
+ *
+ * Children sit in their parent's frame with the parent's top-left at the
+ * origin, so scaling about that origin is a multiplication. Nested groups take
+ * the same factors, because their own box has just been scaled by them.
+ *
+ * Rotated children keep their rotation and are scaled on the group's axes, the
+ * same compromise a multi-selection resize already makes: a non-uniform scale
+ * of a rotated box is a skew, and the model deliberately cannot hold one.
+ */
+function scaleContents(
+  editor: Editor,
+  id: ShapeId,
+  sx: number,
+  sy: number,
+  into: Map<ShapeId, Partial<AnyShape>>,
+): void {
+  if (!Number.isFinite(sx) || !Number.isFinite(sy) || (sx === 1 && sy === 1)) return
+
+  for (const child of editor.getChildren(id)) {
+    const shape = editor.getShape(child)
+    if (!shape) continue
+
+    const width = Math.max(MIN_SIZE, shape.width * sx)
+    const height = Math.max(MIN_SIZE, shape.height * sy)
+    const changes: Partial<AnyShape> = { x: shape.x * sx, y: shape.y * sy, width, height }
+
+    const propChanges = editor.registry.get(shape.type)?.onResize?.(shape, { width, height })
+    if (propChanges && Object.keys(propChanges).length > 0) {
+      ;(changes as { props?: unknown }).props = {
+        ...(shape.props as object),
+        ...(propChanges as object),
+      }
+    }
+
+    into.set(child, changes)
+    if (shape.type === 'group') scaleContents(editor, child, sx, sy, into)
   }
 }
 
